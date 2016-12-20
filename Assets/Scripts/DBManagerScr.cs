@@ -1,10 +1,10 @@
 ﻿using Assets.Scripts;
 using UnityEngine;
-using SQLite;
-using System.Collections.Generic;
+using System.Data;
+using Mono.Data.Sqlite;
 
 public class DBManagerScr {
-
+    #region Singleton
     private static DBManagerScr instance = null;
 
     private DBManagerScr() { }
@@ -14,25 +14,26 @@ public class DBManagerScr {
         if (instance == null) instance = new DBManagerScr();
         return instance;
     }
+    #endregion
 
-	public List<Product> GetById (int id) {
+    #region PublicMethods
+    public Product GetById (int id) {
+        Product tmpProd = null;
 
-        List<Product> tmpProd = new List<Product>();
+        IDbConnection connection = new SqliteConnection("URI = file:" + Application.dataPath + "/DataBases/Product.db");
+        connection.Open();
+        IDbCommand command = connection.CreateCommand();
+        command.CommandText = "SELECT * FROM tblProducts WHERE id = " + id;
+        IDataReader reader = command.ExecuteReader();
 
-        // Создаем новое подключение к базе данных
-        using (var db = new SQLiteConnection(Application.dataPath + "/DataBases/Product.db"))
+        while (reader.Read())
         {
-            // Делаем запрос на выборку данных
-            IEnumerable<Product> list = db.Query<Product>("SELECT * FROM tblProducts");
-            // Читаем и выводим результат
-            foreach (Product prod in list)
-            {
-                tmpProd.Add(prod);
-            }
-            // И не забываем закрыть соединение
-            db.Close();
+            tmpProd = new Product();
+            tmpProd.id = reader.GetInt32(0);
+            tmpProd.name = reader.GetString(1);
+            tmpProd.description = reader.GetString(2);
         }
-
         return tmpProd;
 	}
+    #endregion
 }

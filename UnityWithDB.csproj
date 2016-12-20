@@ -99,7 +99,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\ClickBtnScr.cs" />
     <Compile Include="Assets\Scripts\DBManagerScr.cs" />
     <Compile Include="Assets\Scripts\GameControlleScr.cs" />
     <Compile Include="Assets\Scripts\Product.cs" />

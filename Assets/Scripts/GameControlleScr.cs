@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 using UnityEngine;
 using Assets.Scripts;
+using System;
 
 public class GameControlleScr : MonoBehaviour {
 
@@ -11,30 +10,22 @@ public class GameControlleScr : MonoBehaviour {
 
     public void buttonEnterClick()
     {
-        int id = int.Parse(inputField.GetComponent<Text>().text);
-
-        List<Product> prod = new List<Product>();
-
-        prod = DBManagerScr.getInstance().GetById(id);
-
-        string finalyStr = "Enter corect product ID!";
-
-        foreach (var pr in prod)
+        string finalyStr = "Don`t found product with this ID. Please, enter another ID.";
+        try
         {
-            if(id == pr.id)
-                finalyStr = "Id = " + pr.id.ToString() + "\nName: " + pr.name + "\nDescription: " + pr.description + "\n";
+            int id = int.Parse(inputField.GetComponent<Text>().text);
+            Product prod = DBManagerScr.getInstance().GetById(id);
+
+            if (prod != null)
+                finalyStr = "Id = " + prod.id.ToString() + "\nName: " + prod.name + "\nDescription: " + prod.description + "\n";
         }
-
-        outField.GetComponent<Text>().text = finalyStr;
+        catch (Exception e)
+        {
+            finalyStr = "ID must consist only numbers!";
+        }
+        finally
+        {
+            outField.GetComponent<Text>().text = finalyStr;
+        }
     }
-
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }
